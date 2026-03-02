@@ -7,9 +7,9 @@ def bet(player_chips):
     print(f"You've bet {bet_amount}, and have {player_chips} left.")
     return player_chips, bet_amount
 
-def generate_card():
-    card_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
+def generate_card(card_list):
     card = random.choice(card_list)
+    card_list.remove(card)
     if card in ["J", "Q", "K"]:
         value = 10
     elif card == "A":
@@ -21,9 +21,9 @@ def generate_card():
     
 def calculate_score():
     score = 0
-    card_pulled = generate_card()
+    card_pulled = generate_card(card_list)
     score = score + card_pulled
-    card_pulled = generate_card()
+    card_pulled = generate_card(card_list)
     if card_pulled == score:
         player_total_score = split(score, card_pulled)
     score = score + card_pulled
@@ -37,8 +37,7 @@ def split(score, card_pulled):
         global would_split
         would_split = input("Would you like to split?")
         if would_split == "yes":
-            score = score + card_pulled
-            new_card = generate_card()
+            new_card = generate_card(card_list)
             score = score + new_card
             if new_card == 11 and score > 21:
                 score = score - 10
@@ -56,7 +55,7 @@ def double(score, player_chips, bet_amount):
     if dealer_playing == False:
         would_double = input("Would you like to double?")
         if would_double == "yes":
-            new_card = generate_card()
+            new_card = generate_card(card_list)
             score = score + new_card
             player_chips = player_chips - bet_amount
             print(f"You are now on {score} and {player_chips} chips")
@@ -75,32 +74,33 @@ def double(score, player_chips, bet_amount):
 def player_turn(player_total_score):
     hitting_or_standing = True
     while hitting_or_standing == True:
+        if player_total_score < 22:
             hit_or_stand = input("Hit or Stand?")
             if hit_or_stand == "hit":
-                player_card_add = generate_card()
+                player_card_add = generate_card(card_list)
                 player_total_score = player_total_score + player_card_add
                 if player_card_add == 11 and player_total_score > 21:
                     player_total_score = player_total_score - 10
                 print(f"You are now on {player_total_score}")
-                if player_total_score < 22:
-                    hitting_or_stand_again = input("Would you like to hit again?")
-                    if hitting_or_stand_again == "no":
-                        hitting_or_standing = False
-                        return player_total_score
-                else:
-                    print("Player busts!")
-                    hitting_or_standing = False
-                    return player_total_score
+                #if player_total_score < 22:
+                    # hitting_or_stand_again = input("Would you like to hit again?")
             else:
                 hitting_or_standing = False
                 return player_total_score
+        else:
+            print("Player busts!")
+            hitting_or_standing = False
+            return player_total_score
+    else:
+        hitting_or_standing = False
+        return player_total_score
 
 
 def dealer_turn(dealer_total_score):
     dealers_turn = True
     while dealers_turn == True:
         if dealer_total_score < 17:
-            dealer_card_add = generate_card()
+            dealer_card_add = generate_card(card_list)
             dealer_total_score = dealer_total_score + dealer_card_add
             if dealer_card_add == 11 and dealer_total_score > 21:
                 dealer_total_score = dealer_total_score - 10
@@ -133,7 +133,7 @@ def determine_winner(player_go, dealer_go, player_blackjack, dealer_blackjack):
         return "Not covered yet"
         
 
-
+card_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
 playing = True
 print("Welcome to blackjack")
 global player_chips
@@ -184,5 +184,6 @@ while playing == True:
         player_chips = player_chips + bet_amount
         print("You get your chips back")
     play_again = input("Would you like to play again?")
+    card_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
     if play_again == "no":
         playing = False
