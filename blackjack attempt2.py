@@ -5,7 +5,7 @@ def bet(player_chips):
     bet_amount = int(bet_amount)
     player_chips = player_chips - bet_amount
     print(f"You've bet {bet_amount}, and have {player_chips} left.")
-    return player_chips
+    return player_chips, bet_amount
 
 def generate_card():
     card_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
@@ -24,8 +24,53 @@ def calculate_score():
     card_pulled = generate_card()
     score = score + card_pulled
     card_pulled = generate_card()
+    if card_pulled == score:
+        player_total_score = split(score, card_pulled)
     score = score + card_pulled
+    if score == 11:
+        player_total_score = double(score, player_chips, bet_amount)
     return score
+
+def split(score, card_pulled):
+    if dealer_playing == False:
+        print("split!")
+        global would_split
+        would_split = input("Would you like to split?")
+        if would_split == "yes":
+            score = score + card_pulled
+            new_card = generate_card()
+            score = score + new_card
+            if new_card == 11 and score > 21:
+                score = score - 10
+                print(f"You are now on {score}")
+                return score
+            if score > 21:
+                print("Player busts!")
+                return score
+        else:
+            return score
+    
+def double(score, player_chips, bet_amount):
+    print("Double!?")
+    global would_double
+    if dealer_playing == False:
+        would_double = input("Would you like to double?")
+        if would_double == "yes":
+            new_card = generate_card()
+            score = score + new_card
+            player_chips = player_chips - bet_amount
+            print(f"You are now on {score} and {player_chips} chips")
+            if new_card == 11 and score > 21:
+                score = score - 10
+                print(f"You are now on {score}")
+                return score
+            if score > 21:
+                print("Player busts!")
+                return score
+        else:
+            return score
+
+
 
 def player_turn(player_total_score):
     hitting_or_standing = True
@@ -69,11 +114,11 @@ def determine_winner(player_go, dealer_go, player_blackjack, dealer_blackjack):
     if player_go > dealer_go and player_go < 22:
         return "Player"
     # If player bust and dealer hasnt
-    elif player_go > 22 and dealer_go < 22:
+    elif player_go >= 22 and dealer_go < 22:
         return "Dealer"
     # If dealer and player same
     elif player_go == dealer_go:
-        return "Both equal, push"
+        return "Push"
     # If dealer more than player and not bust
     elif player_go < dealer_go and dealer_go < 22:
         return "Dealer"
@@ -91,12 +136,17 @@ def determine_winner(player_go, dealer_go, player_blackjack, dealer_blackjack):
 
 playing = True
 print("Welcome to blackjack")
+global player_chips
 player_chips = 100
+would_split = "no"
+would_double = "no"
+global bet_amount
 while playing == True:
+    dealer_playing = False
     player_blackjack = False
     dealer_blackjack = False
 
-    player_chips = bet(player_chips)
+    player_chips, bet_amount = bet(player_chips)
 
     player_total_score = calculate_score()
     print(f"Player total score is {player_total_score}")
@@ -105,9 +155,10 @@ while playing == True:
         print("Blackjack for Player!")
         player_blackjack = True
 
-    player_go = player_turn(player_total_score)
+    if would_split == "no" and would_double == "no":
+        player_go = player_turn(player_total_score)
 
-
+    dealer_playing = True
     dealer_total_score = calculate_score()
     print(f"Dealer total score is {dealer_total_score}")
 
@@ -120,6 +171,18 @@ while playing == True:
 
     final_winner = determine_winner(player_go, dealer_go, player_blackjack, dealer_blackjack)
     print(f"The winner is {final_winner}")
+    if final_winner == "Player":
+        player_chips = player_chips + bet_amount * 2
+        print(f"Congradulations, you win {bet_amount} chips!")
+        if would_double == "yes":
+            player_chips = player_chips + bet_amount
+            print(f"Congradulations, you win {bet_amount * 2} chips!")
+        if player_blackjack == "yes":
+            player_chips = player_chips + bet_amount * 0.5
+            print(f"Congradulations, you win {bet_amount * 2} chips!")
+    if final_winner == "Push":
+        player_chips = player_chips + bet_amount
+        print("You get your chips back")
     play_again = input("Would you like to play again?")
-    if play_again == "No":
+    if play_again == "no":
         playing = False
