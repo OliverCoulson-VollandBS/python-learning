@@ -1,9 +1,16 @@
 import random
 
+def bet(player_chips):
+    bet_amount = input("How many chips do you want to bet?")
+    bet_amount = int(bet_amount)
+    player_chips = player_chips - bet_amount
+    print(f"You've bet {bet_amount}, and have {player_chips} left.")
+    return player_chips
+
 def generate_card():
     card_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
     card = random.choice(card_list)
-    if card in card_list == ["J", "Q", "K"]:
+    if card in ["J", "Q", "K"]:
         value = 10
     elif card == "A":
         value = 11
@@ -26,9 +33,9 @@ def player_turn(player_total_score):
             hit_or_stand = input("Hit or Stand?")
             if hit_or_stand == "hit":
                 player_card_add = generate_card()
+                player_total_score = player_total_score + player_card_add
                 if player_card_add == 11 and player_total_score > 21:
                     player_total_score = player_total_score - 10
-                player_total_score = player_total_score + player_card_add
                 print(f"You are now on {player_total_score}")
                 if player_total_score < 22:
                     hitting_or_stand_again = input("Would you like to hit again?")
@@ -50,6 +57,8 @@ def dealer_turn(dealer_total_score):
         if dealer_total_score < 17:
             dealer_card_add = generate_card()
             dealer_total_score = dealer_total_score + dealer_card_add
+            if dealer_card_add == 11 and dealer_total_score > 21:
+                dealer_total_score = dealer_total_score - 10
             print(dealer_total_score)
         else:
             dealers_turn = False
@@ -80,30 +89,37 @@ def determine_winner(player_go, dealer_go, player_blackjack, dealer_blackjack):
         
 
 
-
-
+playing = True
 print("Welcome to blackjack")
-player_blackjack = False
-dealer_blackjack = False
-player_total_score = calculate_score()
-print(f"Player total score is {player_total_score}")
+player_chips = 100
+while playing == True:
+    player_blackjack = False
+    dealer_blackjack = False
 
-if player_total_score == 21:
-    print("Blackjack for Player!")
-    player_blackjack = True
+    player_chips = bet(player_chips)
 
-player_go = player_turn(player_total_score)
+    player_total_score = calculate_score()
+    print(f"Player total score is {player_total_score}")
 
+    if player_total_score == 21:
+        print("Blackjack for Player!")
+        player_blackjack = True
 
-dealer_total_score = calculate_score()
-print(f"Dealer total score is {dealer_total_score}")
-
-if dealer_total_score == 21:
-    print("Blackjack for Dealer!")
-    dealer_blackjack = True
-
-dealer_go = dealer_turn(dealer_total_score)
+    player_go = player_turn(player_total_score)
 
 
-final_winner = determine_winner(player_go, dealer_go, player_blackjack, dealer_blackjack)
-print(f"The winner is {final_winner}")
+    dealer_total_score = calculate_score()
+    print(f"Dealer total score is {dealer_total_score}")
+
+    if dealer_total_score == 21:
+        print("Blackjack for Dealer!")
+        dealer_blackjack = True
+
+    dealer_go = dealer_turn(dealer_total_score)
+
+
+    final_winner = determine_winner(player_go, dealer_go, player_blackjack, dealer_blackjack)
+    print(f"The winner is {final_winner}")
+    play_again = input("Would you like to play again?")
+    if play_again == "No":
+        playing = False
