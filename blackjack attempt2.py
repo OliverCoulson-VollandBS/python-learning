@@ -1,9 +1,16 @@
 import random
 
 def generate_card():
-    card = random.randint(1, 10)
+    card_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
+    card = random.choice(card_list)
+    if card in card_list == ["J", "Q", "K"]:
+        value = 10
+    elif card == "A":
+        value = 11
+    else:
+        value = card
     print(card)
-    return(card)
+    return(value)
     
 def calculate_score():
     score = 0
@@ -19,6 +26,8 @@ def player_turn(player_total_score):
             hit_or_stand = input("Hit or Stand?")
             if hit_or_stand == "hit":
                 player_card_add = generate_card()
+                if player_card_add == 11 and player_total_score > 21:
+                    player_total_score = player_total_score - 10
                 player_total_score = player_total_score + player_card_add
                 print(f"You are now on {player_total_score}")
                 if player_total_score < 22:
@@ -46,7 +55,7 @@ def dealer_turn(dealer_total_score):
             dealers_turn = False
             return dealer_total_score
 
-def determine_winner(player_go, dealer_go):
+def determine_winner(player_go, dealer_go, player_blackjack, dealer_blackjack):
     # If player more than dealer and not bust
     if player_go > dealer_go and player_go < 22:
         return "Player"
@@ -62,6 +71,10 @@ def determine_winner(player_go, dealer_go):
     # Player less than 22 and dealer bust
     elif player_go < 22 and dealer_go > 21:
         return "Player"
+    # Player blackjack and dealer not
+    elif player_blackjack == True and dealer_blackjack == False:
+        return "Player, with a blackjack!"
+        # 2.5* chips
     else:
         return "Not covered yet"
         
@@ -70,13 +83,27 @@ def determine_winner(player_go, dealer_go):
 
 
 print("Welcome to blackjack")
+player_blackjack = False
+dealer_blackjack = False
 player_total_score = calculate_score()
-dealer_total_score = calculate_score()
 print(f"Player total score is {player_total_score}")
-print(f"Dealer total score is {dealer_total_score}")
+
+if player_total_score == 21:
+    print("Blackjack for Player!")
+    player_blackjack = True
 
 player_go = player_turn(player_total_score)
+
+
+dealer_total_score = calculate_score()
+print(f"Dealer total score is {dealer_total_score}")
+
+if dealer_total_score == 21:
+    print("Blackjack for Dealer!")
+    dealer_blackjack = True
+
 dealer_go = dealer_turn(dealer_total_score)
 
-final_winner = determine_winner(player_go, dealer_go)
+
+final_winner = determine_winner(player_go, dealer_go, player_blackjack, dealer_blackjack)
 print(f"The winner is {final_winner}")
