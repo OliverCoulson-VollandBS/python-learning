@@ -133,7 +133,9 @@ def determine_winner(player_go, dealer_go, player_blackjack, dealer_blackjack):
         return "Not covered yet"
         
 
-card_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
+card_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", 
+             "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 
+             8, 9, 10, "J", "Q", "K", "A"]
 playing = True
 print("Welcome to blackjack")
 global player_chips
@@ -184,6 +186,9 @@ while playing == True:
         player_chips = player_chips + bet_amount
         print("You get your chips back")
     play_again = input("Would you like to play again?")
-    card_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
+    card_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 
+                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 
+                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A", 
+                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
     if play_again == "no":
         playing = False
