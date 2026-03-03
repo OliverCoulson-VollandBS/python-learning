@@ -128,6 +128,8 @@ def determine_winner(player_go, dealer_go, player_blackjack, dealer_blackjack):
     # Player blackjack and dealer not
     elif player_blackjack == True and dealer_blackjack == False:
         return "Player, with a blackjack!"
+    elif player_blackjack > 21 and dealer_blackjack > 21:
+        return "Player, with a blackjack!"
         # 2.5* chips
     else:
         return "Not covered yet"
